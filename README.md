@@ -13,10 +13,13 @@ CTRL + SHIFT + I = Opera GX /// F12 = Google Chrome
 
 "alert((webpackChunkdiscord_app.push([[''],{},e=>{m=[];for(let c in e.c)m.push(e.c[c])}]),m.find(m=>m?.exports?.default?.getToken!==void 0)).exports.default.getToken());"
 
-OBS: SEM AS ASPAS !!!
+OBS: SEM AS ASPAS!!!
 
 ![NK](Images/console.png)
 ![NK](Images/image.png)
+![NK](Images/token.png)
+
+OBS: Geralmente o TOKEN aparece na parte superior no meio do navegador!!!
 
 4. Depois que pegar o seu TOKEN baixe o Node.js na sua ultima versão em "https://nodejs.org/pt".
 ![NK](Images/node.png)
