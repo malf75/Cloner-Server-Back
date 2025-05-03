@@ -1,6 +1,6 @@
 # Cloner-Server-Discord     
 
-Tutorial 
+                                                   [ TUTORIAL ]
 
 1. Abra o DISCORD no navegador...
 
@@ -19,7 +19,7 @@ OBS: SEM AS ASPAS !!!
 4. Depois que pegar o seu TOKEN baixe o Node.js na sua ultima versão em "https://nodejs.org/pt"
 ![NK](Images/node.png)
 
-5. Assim que o Node.js estiver instalado no seu sistema, vá no terminal e digite "node --version" pra ver a versão e se realmente instalou o Node.js!
+5. Assim que o Node.js estiver instalado no seu sistema, vá no terminal e digite "node --version" pra ver a versão e se realmente instalou
 ![NK](Images/version_node.png)
 
 6. Com o ambiente JavaScript instalado clique no arquivo "instalar.bat" e depois "iniciar.bat" para iniciar o script
