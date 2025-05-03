@@ -12,6 +12,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
+app.options('/clone', cors(), (req, res) => {
+  res.sendStatus(200);
+});
+
 app.post('/clone', async (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
