@@ -40,7 +40,7 @@ app.post('/clone', async (req, res) => {
   const sendEvent = (data) => {
     res.write(`data: ${JSON.stringify(data)}\n\n`);
   };
-1 + token_2
+  
   try {
     await run(token, original, target, sendEvent);
     sendEvent({ type: 'success', message: 'Servidor clonado com sucesso!' });
