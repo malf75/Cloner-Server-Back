@@ -1,4 +1,4 @@
 @echo off
 Title Iniciando...
-node Cloner.js
+node Cloner-Bash.js
 pause
