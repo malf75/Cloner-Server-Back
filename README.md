@@ -22,7 +22,7 @@ CTRL + SHIFT + I = Opera GX /// F12 = Google Chrome
 ![NK](Images/version_node.png)
 
 6. Com o ambiente JavaScript instalado clique no arquivo "instalar.bat" e depois "iniciar.bat" para iniciar o script
-![NK](Images/Instalar.png)
+![NK](Images/instalar.png)
 
 7. O Programa irá pedir as informações abaixo...
 
