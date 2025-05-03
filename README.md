@@ -26,7 +26,7 @@ OBS: SEM AS ASPAS !!!
 ![NK](Images/instalar.png)
 
 7. O Programa irá pedir as informações abaixo:
-![NK](Images/cloner.png)![alt text](image.png)
+![NK](Images/cloner.png)
 
 8. A imagem abaixo mostra como pegar os ID's dos servidores e como habilitar o modo desenvolvedor pra poder pegar os mesmos.
 
@@ -41,10 +41,7 @@ III - Com isso você irá clicar com o botão direito do mouse em cima do servid
 
 IV - E por fim copia e cola o código referente ao servidor que você quer copiar e o outro que receberá a copia
 
-                                                                                                        
-                                                 FIM!
-
-# by Nerostav Kuznetsov
+# Nerostav Kuznetsov
 
 
 
