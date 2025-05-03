@@ -47,7 +47,7 @@ III - Com isso você irá clicar com o botão direito do mouse em cima do servid
 IV - E por fim copia e cola os códigos referente ao servidor que você quer copiar e o outro que receberá a copia
 
 Resultado...
-[NK](Images/app.png)
+![NK](Images/app.png)
 
 # Nerostav Kuznetsov
 
