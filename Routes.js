@@ -6,6 +6,8 @@ const { run } = require('./Cloner-Back');
 
 app.use(express.json());
 
+app.use(express.json({ limit: '1mb' }));
+
 app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'OPTIONS'],
