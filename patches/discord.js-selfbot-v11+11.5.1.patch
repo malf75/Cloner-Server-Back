@@ -1,13 +1,17 @@
 diff --git a/node_modules/discord.js-selfbot-v11/src/util/Constants.js b/node_modules/discord.js-selfbot-v11/src/util/Constants.js
-index 9110c42..05b9b0a 100644
+index 9110c42..8e130c2 100644
 --- a/node_modules/discord.js-selfbot-v11/src/util/Constants.js
 +++ b/node_modules/discord.js-selfbot-v11/src/util/Constants.js
-@@ -646,7 +646,7 @@ exports.UserSettingsMap = {
+@@ -646,9 +646,9 @@ exports.UserSettingsMap = {
       * @property {boolean} mutualFriends Only mutual friends
       */
      return {
 -      all: flags.all || false,
-+      all: (flags && flags.all) || false,
-       mutualGuilds: flags.all ? true : flags.mutual_guilds || false,
-       mutualFriends: flags.all ? true : flags.mutualFriends || false,
+-      mutualGuilds: flags.all ? true : flags.mutual_guilds || false,
+-      mutualFriends: flags.all ? true : flags.mutualFriends || false,
++      all: flags?.all || false,
++      mutualGuilds: flags?.all ? true : flags.mutual_guilds || false,
++      mutualFriends: flags?.all ? true : flags.mutualFriends || false,
      };
+   },
+ };
