@@ -42,7 +42,7 @@ app.post('/clone', async (req, res) => {
   };
 1 + token_2
   try {
-    await run((token, original, target, sendEvent);
+    await run(token, original, target, sendEvent);
     sendEvent({ type: 'success', message: 'Servidor clonado com sucesso!' });
     res.end();
   } catch (e) {
