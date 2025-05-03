@@ -8,9 +8,13 @@
 
 3. Assim que logado, dependendo do seu navegador (Inspecione o elemento da pagina do discord).
 CTRL + SHIFT + I = Opera GX /// F12 = Google Chrome
+
  -> Vá em CONSOLE e digite o script abaixo:
+
 "alert((webpackChunkdiscord_app.push([[''],{},e=>{m=[];for(let c in e.c)m.push(e.c[c])}]),m.find(m=>m?.exports?.default?.getToken!==void 0)).exports.default.getToken());"
+
 OBS: SEM AS ASPAS !!!
+
 ![NK](Images/console.png)
 ![NK](Images/image.png)
 
