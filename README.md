@@ -2,12 +2,13 @@
 
 Tutorial 
 
-1. Abra o Discord Web
-2. Logue com a sua conta
+1. Abra o Discord 
+
+2. Logue com a sua 
+
 3. Dependendo do seu navegador (Inspecione o elemento da pagina do discord)
 
-CTRL + SHIFT + I = Opera GX
-F12 = Google Chrome
+CTRL + SHIFT + I = Opera GX /// F12 = Google Chrome
 
  -> Vá em CONSOLE e digite o script abaixo:
 
@@ -23,7 +24,9 @@ F12 = Google Chrome
 
 5. Assim que o Noje.js estiver instalado no seu sistema, vá no terminal e digite node --version pra ver a versão e se realmente está instalado! 
 
-![NK](Images/instalar.png)
+![NK](Images/version_node.png)
+
+6. 
 
 
 
