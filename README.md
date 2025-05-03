@@ -24,11 +24,8 @@ CTRL + SHIFT + I = Opera GX /// F12 = Google Chrome
 6. Com o ambiente JavaScript instalado clique no arquivo "instalar.bat" e depois "iniciar.bat" para iniciar o script
 ![NK](Images/instalar.png)
 
-7. O Programa irá pedir as informações abaixo...
-
-√ Token da conta » TOKEN DA SUA CONTA
-√ ID Do servidor que você irá copiar » xxx  
-? ID Do servidor que receberá a cópia » xxx
+7. O Programa irá pedir as informações abaixo:
+![NK](Images/cloner.png)![alt text](image.png)
 
 8. A imagem abaixo mostra como pegar os ID's dos servidores e como habilitar o modo desenvolvedor pra poder pegar os mesmos.
 
