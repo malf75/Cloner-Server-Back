@@ -2,9 +2,10 @@
 
 Tutorial 
 
-1. Abra o DISCORD WEB
+1. Abra o DISCORD no navegador...
+![NK](Images/discord.png)
 
-2. Logue com a sua conta do DISCORD
+2. Logue com a sua conta do DISCORD...
 
 3. Dependendo do seu navegador (Inspecione o elemento da pagina do discord)
 CTRL + SHIFT + I = Opera GX /// F12 = Google Chrome
@@ -12,7 +13,7 @@ CTRL + SHIFT + I = Opera GX /// F12 = Google Chrome
 
  -> Vá em CONSOLE e digite o script abaixo:
 ![NK](Images/console.png)
-![NK](Images/image2.png)
+![NK](Images/image.png)
 
 4. Depois que pegar o seu TOKEN baixe o Node.js na sua ultima versão em "https://nodejs.org/pt"
 ![NK](Images/node.png)
@@ -21,7 +22,7 @@ CTRL + SHIFT + I = Opera GX /// F12 = Google Chrome
 ![NK](Images/version_node.png)
 
 6. Com o ambiente JavaScript instalado clique no arquivo "instalar.bat" e depois "iniciar.bat" para iniciar o script
-![NK](Images/image.png)
+![NK](Images/Instalar.png)
 
 7. O Programa irá pedir as informações abaixo...
 
