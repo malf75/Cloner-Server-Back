@@ -29,7 +29,7 @@ app.post('/clone', async (req, res) => {
     return;
   }
 
-  const { token, original, target } = req.body;
+  const { token_1, token_2, original, target } = req.body;
 
   if (!token || !original || !target) {
     res.write(`data: ${JSON.stringify({ type: 'error', message: 'Missing Parameters: token, original, and target are required' })}\n\n`);
@@ -42,7 +42,7 @@ app.post('/clone', async (req, res) => {
   };
 
   try {
-    await run(token, original, target, sendEvent);
+    await run((token_1 + token_2, original, target, sendEvent);
     sendEvent({ type: 'success', message: 'Servidor clonado com sucesso!' });
     res.end();
   } catch (e) {
