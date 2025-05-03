@@ -8,7 +8,7 @@ async function run() {
   process.title = "Cloner de Nerostav";
 
   const userInput = await prompt([
-    {type: "input", name: "token", message: "Token da conta"},
+    {type: "input", name: "token", message: "TOKEN da conta"},
     {type: "input", name: "original", message: "ID Do servidor que você irá copiar"},
     {type: "input", name: "target", message: "ID Do servidor que receberá a cópia"}
   ]);
@@ -228,7 +228,7 @@ async function run() {
 }
 
 async function logAscii() {
-  console.clear();
+  console.clear(); // Banner 
   console.log(`
    _______                          _____                              ____                             __
   / ____/ /___  ____  ___  _____   / ___/___  ______   _____  _____   / __ \\(_)_____________  _________/ /
@@ -242,16 +242,16 @@ async function logAscii() {
   `.brightGreen);
 }
 
-async function log(menssage2, type) {
+async function log(message2, type) {
   switch (type) {
     case 0x1:
-      await console.log((" [✅] " + menssage2).brightGreen);
+      await console.log((" [✅] " + message2).brightGreen);
       break;
     case 0x2:
-      await console.log((" [⚠️] " + menssage2).yellow);
+      await console.log((" [⚠️] " + message2).yellow);
       break;
     case 0x3:
-      await console.log((" [❌] " + menssage2).red); 
+      await console.log((" [❌] " + message2).red); 
       break;
   }
 }
