@@ -18,7 +18,7 @@ app.options('/clone', cors(), (req, res) => {
   res.sendStatus(200);
 });
 
-app.post('/clone', async (req, res) => {
+app.get('/clone', async (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
