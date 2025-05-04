@@ -9,7 +9,8 @@
     },
     "scripts": {
         "postinstall": "patch-package",
-        "start": "node Routes.js"
+        "start": "node Routes.js",
+        "debug": "NODE_ENV=development node --inspect Routes.js"
     },
     "devDependencies": {
         "patch-package": "^8.0.0"
