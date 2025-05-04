@@ -17,7 +17,7 @@ app.get('/', (req, res) => {
   res.send('OK');
 });
 
-app.options('/clone', cors(), (req, res) => {
+app.options('/clone', (req, res) => {
   res.sendStatus(200);
 });
 
