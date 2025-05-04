@@ -10,6 +10,7 @@ app.use(cors({
   origin: ['http://localhost:3000'],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: false,
 }));
 
 app.get('/', (req, res) => {
@@ -47,6 +48,7 @@ app.get('/clone', async (req, res) => {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
     Connection: 'keep-alive',
+    'Access-Control-Allow-Origin': 'http://localhost:3000'
   });
 
   const sendEvent = (data) => {
