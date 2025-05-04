@@ -3,17 +3,19 @@ const {prompt} = require("enquirer");
 const client = new Client();
 var colors = require("colors"); 
 
-async function run() {
+async function run(token, original, target, sendEvent) {
   await logAscii();
   process.title = "Cloner de Nerostav";
 
-  const userInput = await prompt([
-    {type: "input", name: "token", message: "TOKEN da conta"},
-    {type: "input", name: "original", message: "ID Do servidor que você irá copiar"},
-    {type: "input", name: "target", message: "ID Do servidor que receberá a cópia"}
-  ]);
+  if (!token || !original || !target){
+    const userInput = await prompt([
+      {type: "input", name: "token", message: "TOKEN da conta"},
+      {type: "input", name: "original", message: "ID Do servidor que você irá copiar"},
+      {type: "input", name: "target", message: "ID Do servidor que receberá a cópia"}
+    ]);
+  }
 
-  const {token, original, target} = userInput;
+  token, original, target = userInput;
 
   client.on("ready", async () => {
     logAscii();
@@ -21,6 +23,10 @@ async function run() {
     servers.forEach(server => {
       if (!server) {
         log("Um de seus servidores está inválido, verifique os ID's.", 0x3);
+        sendEvent({
+          type: 'error',
+          message: 'Um de seus servidores está inválido, verifique os IDs' + 0x3
+        });
         process.exit(0x1);
       }
     });
@@ -34,10 +40,12 @@ async function run() {
 
     process.title = "O Servidor está clonando...: " + servers[0].name;
     log("Deletando servidor atual...", 0x3);
+    sendEvent({ type: 'progress', message: 'Deletando Canais e Cargos do servidor alvo...' + 0x3});
     await servers[1].channels.forEach(channel => channel["delete"]()['catch'](() => {}));
     await servers[1].roles.map(role => role["delete"]()['catch'](() => {}));
     await servers[1].setIcon(servers[0].iconURL);
     await servers[1].setName(servers[0].name + " Nerostav Cloner");
+    sendEvent({type: 'progress', message: `Servidor alvo atualizado: ${servers[1].name}`});
 
     for (let role of serverData.roles) {
       if (servers[1].roles.get(role.id)) {
@@ -51,14 +59,20 @@ async function run() {
         'managed': role.managed,
         'mentionable': role.mentionable,
         'position': role.position
-      }).then(createdRole => log("Copiando Cargo: " + createdRole.name, 0x1));
+      }).then(createdRole => {
+        log("Copiando Cargo: " + createdRole.name, 0x1)
+        sendEvent({ type: 'progress', message: `Cargo clonado: ${createdRole.name}`});
+      });
     }
 
     await servers[0].emojis.forEach(emoji => {
       if (servers[1].emojis.get(emoji.id)) {
         return;
       }
-      servers[1].createEmoji(emoji.url, emoji.name).then(createdEmoji => log("Copiando emoji: " + createdEmoji, 0x1));
+      servers[1].createEmoji(emoji.url, emoji.name).then(createdEmoji => {
+        log("Copiando emoji: " + createdEmoji, 0x1)
+        sendEvent({type: 'progress', message: `Emoji clonado ${createdEmoji.name}` + 0x1});
+      });
     });
 
     serverData.categories.forEach(async category => {
@@ -81,6 +95,7 @@ async function run() {
         'position': category.position
       }).then(createdCategory => {
         log("Copiando categoria: " + createdCategory.name, 0x1);
+        sendEvent({type: 'progress', mtype: 'progress', message: `Categoria clonada ${createdCategory.name}` + 0x1});
       });
     });
 
@@ -154,6 +169,7 @@ async function run() {
         }
       }
       log("Copiando canal de texto: " + textChannel.name, 0x1);
+      sendEvent({type: 'progress', message: `Canal de texto clonado ${textChannel.name}` + 0x1});
     }
 
     for (let voiceChannel of serverData.voiceChannels) {
@@ -218,12 +234,14 @@ async function run() {
         }
       }
       log("Copiando canal de voz: " + voiceChannel.name, 0x1);
+      sendEvent({type: 'progress', message: `Emoji clonado ${voiceChannel.name}` + 0x1});
     }
   });
 
   client.login(('' + token).replace(/"/g, ''))['catch'](() => {
     logAscii();
     log("Seu token está inválido. Verifique o token", 0x3);
+    sendEvent({ type: 'error', message: 'Seu token está inválido. Verifique o token' + 0x3});
   });
 }
 
