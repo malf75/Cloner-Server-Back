@@ -14,29 +14,58 @@ const corsOptions = {
 };
 
 app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true }));
+
 app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
-  res.set('Connection', 'keep-alive');
-  res.set('Keep-Alive', 'timeout=30');
+  res.setTimeout(300000, () => {
+    console.error('Request timed out:', req.originalUrl);
+    res.status(504).end();
+  });
   next();
 });
 
-app.get('/', (req, res) => {
-  res.send('OK');
+const activeSessions = new Map();
+setInterval(() => {
+  const now = Date.now();
+  for (const [sessionId, { timestamp }] of activeSessions) {
+    if (now - timestamp > 3600000) {
+      activeSessions.delete(sessionId);
+    }
+  }
+}, 60000);
+
+app.post('/clone', async (req, res) => {
+  try {
+    const { token, original, target } = req.body;
+    if (!token || !original || !target) {
+      return res.status(400).json({ error: 'Missing parameters' });
+    }
+
+    const sessionId = uuidv4();
+    activeSessions.set(sessionId, { 
+      token, 
+      original, 
+      target,
+      timestamp: Date.now()
+    });
+
+    return res.json({ sessionId });
+  } catch (error) {
+    console.error('POST /clone error:', error);
+    return res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
-const activeSessions = new Map();
-
-app.get('/clone', cors(corsOptions), async (req, res) => {
+app.get('/clone', async (req, res) => {
   try {
     const sessionId = req.query.sessionId;
     if (!sessionId || !activeSessions.has(sessionId)) {
       return res.status(400).json({ error: 'Invalid session' });
     }
 
-    const { token, original, target } = activeSessions.get(sessionId);
-
+    const session = activeSessions.get(sessionId);
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -44,25 +73,32 @@ app.get('/clone', cors(corsOptions), async (req, res) => {
     });
 
     const heartbeat = setInterval(() => {
-      res.write(':ping\n\n');
-    }, 15000);
+      res.write(':\n\n');
+    }, 10000);
 
     const sendEvent = (data) => {
       res.write(`data: ${JSON.stringify(data)}\n\n`);
     };
 
+    const timeout = setTimeout(() => {
+      sendEvent({ type: 'error', message: 'Operation timed out' });
+      res.end();
+    }, 240000);
+
     try {
-      await run(token, original, target, sendEvent);
-      sendEvent({ type: 'success', message: 'Server cloned successfully!' });
-    } catch (e) {
-      sendEvent({ type: 'error', message: `Error: ${e.message}` });
+      await run(session.token, session.original, session.target, sendEvent);
+      sendEvent({ type: 'success', message: 'Clone completed' });
+    } catch (error) {
+      console.error('Clone error:', error);
+      sendEvent({ type: 'error', message: error.message });
     } finally {
       clearInterval(heartbeat);
-      res.end();
+      clearTimeout(timeout);
       activeSessions.delete(sessionId);
-      if (client && client.destroy) {
-        await client.destroy().catch(() => {});
+      if (client?.destroy) {
+        await client.destroy().catch(console.error);
       }
+      res.end();
     }
   } catch (error) {
     console.error('SSE endpoint error:', error);
@@ -71,9 +107,5 @@ app.get('/clone', cors(corsOptions), async (req, res) => {
 });
 
 app.listen(port, '0.0.0.0', () => {
-  console.log(`Server running on port ${port}`);
-});
-
-process.on('unhandledRejection', (reason, promise) => {
-  console.error('Unhandled Rejection at:', promise, 'reason:', reason);
+  console.log(`Server listening on ${port}`);
 });
