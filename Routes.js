@@ -1,7 +1,6 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
-const port = process.env.PORT || 8000;
 const { run } = require('./Cloner-Back');
 const { v4: uuidv4 } = require('uuid');
 const cleanup = (res, sessionId) => {
@@ -118,6 +117,6 @@ app.get('/clone', async (req, res) => {
   }
 });
 
-app.listen(port, '0.0.0.0', () => {
-  console.log(`Server listening on ${port}`);
+const server = app.listen(process.env.PORT || 8000, '0.0.0.0', () => {
+  console.log(`Server running on ${server.address().port}`);
 });
