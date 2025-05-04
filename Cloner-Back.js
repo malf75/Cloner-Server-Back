@@ -15,7 +15,7 @@ async function run(token, original, target, sendEvent) {
             type: 'error',
             message: 'Um de seus servidores está inválido, verifique os IDs'
         });
-        throw new Error("Servidor inválido");
+        log("Servidor Inválido...", 0x3);
       }
     });
 
