@@ -2,9 +2,15 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8000;
-const { run } = require('./Cloner-Bash');
+const { run } = require('./Cloner-Back');
 const { v4: uuidv4 } = require('uuid');
-
+const cleanup = (res, sessionId) => {
+  res.on('close', () => {
+    if (activeSessions.has(sessionId)) {
+      activeSessions.delete(sessionId);
+    }
+  });
+};
 const corsOptions = {
   origin: ['http://localhost:3000', 'http://0.0.0.0:3000'],
   methods: ['GET', 'POST', 'OPTIONS'],
@@ -15,7 +21,10 @@ const corsOptions = {
 
 app.use(express.json({ limit: '1mb' }));
 app.use(express.urlencoded({ extended: true }));
-
+app.use((req, res, next) => {
+  res.setHeader('X-Request-Start', Date.now());
+  next();
+});
 app.use(cors(corsOptions));
 
 app.use((req, res, next) => {
@@ -61,6 +70,7 @@ app.post('/clone', async (req, res) => {
 app.get('/clone', async (req, res) => {
   try {
     const sessionId = req.query.sessionId;
+    cleanup(res, sessionId);
     if (!sessionId || !activeSessions.has(sessionId)) {
       return res.status(400).json({ error: 'Invalid session' });
     }
@@ -69,7 +79,9 @@ app.get('/clone', async (req, res) => {
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive'
+      'Connection': 'keep-alive',
+      'X-Accel-Buffering': 'no',
+      'Content-Encoding': 'none'
     });
 
     const heartbeat = setInterval(() => {
