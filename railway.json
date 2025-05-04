@@ -2,7 +2,12 @@
   "builds": [
     {
       "src": "package.json",
-      "use": "@railway/node"
+      "use": "@railway/node",
+      "config": {
+        "cache": {
+          "paths": ["node_modules"]
+        }
+      }
     }
   ],
   "routes": [
@@ -10,8 +15,9 @@
       "handle": "filesystem"
     },
     {
-      "src": "/.*",
-      "dest": "Routes.js"
+      "src": "/clone",
+      "dest": "/",
+      "continue": true
     }
   ]
 }
