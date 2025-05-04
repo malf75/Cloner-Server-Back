@@ -35,7 +35,17 @@ app.get('/clone', async (req, res) => {
     return;
   }
 
-  const { token, original, target } = req.query;
+try {
+  await run(token, original, target, sendEvent);
+  sendEvent({ type: 'success', message: 'Servidor clonado com sucesso!' });
+} catch (e) {
+  sendEvent({ type: 'error', message: `Erro ao clonar: ${e.message}` });
+} finally {
+    res.end();
+  if (client && typeof client.destroy === 'function') {
+    client.destroy();
+  }
+}
 
   if (!token || !original || !target) {
     res.write(`data: ${JSON.stringify({ type: 'error', message: 'Missing Parameters: token, original, and target are required' })}\n\n`);
