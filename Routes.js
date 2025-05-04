@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 
 app.use(express.json({ limit: '1mb' }));
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: ['http://localhost:3000'],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
@@ -37,7 +37,8 @@ app.post('/clone', async (req, res) => {
 app.get('/clone', async (req, res) => {
   const sessionId = req.query.sessionId;
   if (!sessionId || !activeSessions.has(sessionId)) {
-    return res.status(400).send('Invalid or missing sessionId');
+    res.status(400).send('Invalid or missing sessionId');
+    return;
   }
 
   const { token, original, target } = activeSessions.get(sessionId);
