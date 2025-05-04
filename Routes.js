@@ -6,13 +6,19 @@ const { run } = require('./Cloner-Back');
 
 app.use(express.json());
 
+app.use(express.json({ limit: '1mb' }));
+
 app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
-app.get('/clone', async (req, res) => {
+app.options('/clone', cors(), (req, res) => {
+  res.sendStatus(200);
+});
+
+app.post('/clone', async (req, res) => {
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
@@ -36,7 +42,7 @@ app.get('/clone', async (req, res) => {
   const sendEvent = (data) => {
     res.write(`data: ${JSON.stringify(data)}\n\n`);
   };
-
+  
   try {
     await run(token, original, target, sendEvent);
     sendEvent({ type: 'success', message: 'Servidor clonado com sucesso!' });
