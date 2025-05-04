@@ -265,4 +265,4 @@ async function log(message2, type) {
   }
 }
 
-module.exports = { run };
+module.exports = { run, client };

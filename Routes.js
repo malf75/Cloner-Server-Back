@@ -3,56 +3,109 @@ const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8000;
 const { run } = require('./Cloner-Bash');
+const { v4: uuidv4 } = require('uuid');
 
-app.use(express.json());
-
-app.use(express.json({ limit: '1mb' }));
-
-app.use(cors({
-  origin: 'http://localhost:3000',
+const corsOptions = {
+  origin: ['http://localhost:3000', 'http://0.0.0.0:3000'],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+  credentials: false,
+  preflightContinue: false
+};
 
-app.options('/clone', cors(), (req, res) => {
-  res.sendStatus(200);
+app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: true }));
+
+app.use(cors(corsOptions));
+
+app.use((req, res, next) => {
+  res.setTimeout(300000, () => {
+    console.error('Request timed out:', req.originalUrl);
+    res.status(504).end();
+  });
+  next();
 });
+
+const activeSessions = new Map();
+setInterval(() => {
+  const now = Date.now();
+  for (const [sessionId, { timestamp }] of activeSessions) {
+    if (now - timestamp > 3600000) {
+      activeSessions.delete(sessionId);
+    }
+  }
+}, 60000);
 
 app.post('/clone', async (req, res) => {
-  res.writeHead(200, {
-    'Content-Type': 'text/event-stream',
-    'Cache-Control': 'no-cache',
-    Connection: 'keep-alive',
-  });
-
-  if (!req.query) {
-    res.write(`data: ${JSON.stringify({ type: 'error', message: 'Request query is missing or invalid' })}\n\n`);
-    res.end();
-    return;
-  }
-
-  const { token, original, target } = req.query;
-
-  if (!token || !original || !target) {
-    res.write(`data: ${JSON.stringify({ type: 'error', message: 'Missing Parameters: token, original, and target are required' })}\n\n`);
-    res.end();
-    return;
-  }
-
-  const sendEvent = (data) => {
-    res.write(`data: ${JSON.stringify(data)}\n\n`);
-  };
-  
   try {
-    await run(token, original, target, sendEvent);
-    sendEvent({ type: 'success', message: 'Servidor clonado com sucesso!' });
-    res.end();
-  } catch (e) {
-    sendEvent({ type: 'error', message: `Erro ao clonar: ${e.message}` });
-    res.end();
+    const { token, original, target } = req.body;
+    if (!token || !original || !target) {
+      return res.status(400).json({ error: 'Missing parameters' });
+    }
+
+    const sessionId = uuidv4();
+    activeSessions.set(sessionId, { 
+      token, 
+      original, 
+      target,
+      timestamp: Date.now()
+    });
+
+    return res.json({ sessionId });
+  } catch (error) {
+    console.error('POST /clone error:', error);
+    return res.status(500).json({ error: 'Internal server error' });
   }
 });
 
-app.listen(port, () => {
-  console.log(`Server running on http://localhost:${port}`);
+app.get('/clone', async (req, res) => {
+  try {
+    const sessionId = req.query.sessionId;
+    if (!sessionId || !activeSessions.has(sessionId)) {
+      return res.status(400).json({ error: 'Invalid session' });
+    }
+
+    const session = activeSessions.get(sessionId);
+    res.writeHead(200, {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive'
+    });
+
+    const heartbeat = setInterval(() => {
+      res.write(':\n\n');
+    }, 10000);
+
+    const sendEvent = (data) => {
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
+    };
+
+    const timeout = setTimeout(() => {
+      sendEvent({ type: 'error', message: 'Operation timed out' });
+      res.end();
+    }, 240000);
+
+    try {
+      await run(session.token, session.original, session.target, sendEvent);
+      sendEvent({ type: 'success', message: 'Clone completed' });
+    } catch (error) {
+      console.error('Clone error:', error);
+      sendEvent({ type: 'error', message: error.message });
+    } finally {
+      clearInterval(heartbeat);
+      clearTimeout(timeout);
+      activeSessions.delete(sessionId);
+      if (client?.destroy) {
+        await client.destroy().catch(console.error);
+      }
+      res.end();
+    }
+  } catch (error) {
+    console.error('SSE endpoint error:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
+app.listen(port, '0.0.0.0', () => {
+  console.log(`Server listening on ${port}`);
 });
