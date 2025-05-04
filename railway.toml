@@ -1,4 +1,10 @@
 [service]
 http.port = 8000
 http.proto = "http1"
-network.ipv6 = true
+network.ipv6 = false
+healthcheck.path = "/health"
+healthcheck.interval = 15
+healthcheck.timeout = 5
+
+[environments.production]
+node_args = "--dns-result-order=ipv4first"
