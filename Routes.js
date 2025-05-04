@@ -14,6 +14,10 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
+app.get('/', (req, res) => {
+  res.send('OK');
+});
+
 app.options('/clone', cors(), (req, res) => {
   res.sendStatus(200);
 });
