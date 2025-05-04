@@ -2,10 +2,10 @@ const express = require('express');
 const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 8000;
-const { run, cliente } = require('./Cloner-Back');
+const { run, client } = require('./Cloner-Back');
+const { v4: uuidv4 } = require('uuid');
 
 app.use(express.json({ limit: '1mb' }));
-
 app.use(cors({
   origin: 'http://localhost:3000',
   methods: ['GET', 'POST', 'OPTIONS'],
@@ -20,48 +20,49 @@ app.options('/clone', cors(), (req, res) => {
   res.sendStatus(200);
 });
 
+const activeSessions = new Map();
+
+app.post('/clone', async (req, res) => {
+  const { token, original, target } = req.body;
+  if (!token || !original || !target) {
+    return res.status(400).json({ error: 'Missing parameters: token, original, and target are required' });
+  }
+
+  const sessionId = uuidv4();
+  activeSessions.set(sessionId, { token, original, target });
+
+  res.json({ sessionId });
+});
+
 app.get('/clone', async (req, res) => {
+  const sessionId = req.query.sessionId;
+  if (!sessionId || !activeSessions.has(sessionId)) {
+    return res.status(400).send('Invalid or missing sessionId');
+  }
+
+  const { token, original, target } = activeSessions.get(sessionId);
+
   res.writeHead(200, {
     'Content-Type': 'text/event-stream',
     'Cache-Control': 'no-cache',
     Connection: 'keep-alive',
   });
 
-  if (!req.query) {
-    res.write(`data: ${JSON.stringify({ type: 'error', message: 'Request query is missing or invalid' })}\n\n`);
-    res.end();
-    return;
-  }
-
-try {
-  await run(token, original, target, sendEvent);
-  sendEvent({ type: 'success', message: 'Servidor clonado com sucesso!' });
-} catch (e) {
-  sendEvent({ type: 'error', message: `Erro ao clonar: ${e.message}` });
-} finally {
-    res.end();
-  if (client && typeof client.destroy === 'function') {
-    client.destroy();
-  }
-}
-
-  if (!token || !original || !target) {
-    res.write(`data: ${JSON.stringify({ type: 'error', message: 'Missing Parameters: token, original, and target are required' })}\n\n`);
-    res.end();
-    return;
-  }
-
   const sendEvent = (data) => {
     res.write(`data: ${JSON.stringify(data)}\n\n`);
   };
-  
+
   try {
     await run(token, original, target, sendEvent);
-    sendEvent({ type: 'success', message: 'Servidor clonado com sucesso!' });
-    res.end();
+    sendEvent({ type: 'success', message: 'Server cloned successfully!' });
   } catch (e) {
-    sendEvent({ type: 'error', message: `Erro ao clonar: ${e.message}` });
+    sendEvent({ type: 'error', message: `Error cloning: ${e.message}` });
+  } finally {
     res.end();
+    if (client && typeof client.destroy === 'function') {
+      client.destroy();
+    }
+    activeSessions.delete(sessionId);
   }
 });
 
