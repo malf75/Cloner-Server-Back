@@ -4,14 +4,16 @@ const app = express();
 const port = process.env.PORT || 8000;
 const { run, client } = require('./Cloner-Back');
 const { v4: uuidv4 } = require('uuid');
-
-app.use(express.json({ limit: '1mb' }));
-app.use(cors({
+const corsOptions = {
   origin: ['http://localhost:3000', 'http://0.0.0.0:3000'],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: false,
-}));
+  preflightContinue: false
+};
+
+app.use(express.json({ limit: '1mb' }));
+app.use(cors(corsOptions));
 
 app.get('/', (req, res) => {
   res.send('OK');
@@ -19,7 +21,11 @@ app.get('/', (req, res) => {
 
 const activeSessions = new Map();
 
-app.post('/clone', async (req, res) => {
+app.options('/clone', cors(corsOptions), (req, res) => {
+  res.status(204).end();
+});
+
+app.post('/clone', cors(corsOptions), async (req, res) => {
   const { token, original, target } = req.body;
   if (!token || !original || !target) {
     return res.status(400).json({ error: 'Missing parameters: token, original, and target are required' });
@@ -31,7 +37,7 @@ app.post('/clone', async (req, res) => {
   res.json({ sessionId });
 });
 
-app.get('/clone', async (req, res) => {
+app.get('/clone', cors(corsOptions), async (req, res) => {
   const sessionId = req.query.sessionId;
   if (!sessionId || !activeSessions.has(sessionId)) {
     res.status(400).send('Invalid or missing sessionId');
