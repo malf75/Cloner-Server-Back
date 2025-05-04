@@ -17,10 +17,6 @@ app.get('/', (req, res) => {
   res.send('OK');
 });
 
-app.options('/clone', (req, res) => {
-  res.sendStatus(200);
-});
-
 const activeSessions = new Map();
 
 app.post('/clone', async (req, res) => {
