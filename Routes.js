@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require('uuid');
 
 app.use(express.json({ limit: '1mb' }));
 app.use(cors({
-  origin: ['http://localhost:3000'],
+  origin: ['http://localhost:3000', 'http://0.0.0.0:3000'],
   methods: ['GET', 'POST', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: false,
