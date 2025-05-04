@@ -4,8 +4,6 @@ const app = express();
 const port = process.env.PORT || 8000;
 const { run, cliente } = require('./Cloner-Back');
 
-app.use(express.json());
-
 app.use(express.json({ limit: '1mb' }));
 
 app.use(cors({
