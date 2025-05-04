@@ -25,13 +25,13 @@ app.post('/clone', async (req, res) => {
     Connection: 'keep-alive',
   });
 
-  if (!req.body) {
-    res.write(`data: ${JSON.stringify({ type: 'error', message: 'Request body is missing or invalid' })}\n\n`);
+  if (!req.query) {
+    res.write(`data: ${JSON.stringify({ type: 'error', message: 'Request query is missing or invalid' })}\n\n`);
     res.end();
     return;
   }
 
-  const { token, original, target } = req.body;
+  const { token, original, target } = req.query;
 
   if (!token || !original || !target) {
     res.write(`data: ${JSON.stringify({ type: 'error', message: 'Missing Parameters: token, original, and target are required' })}\n\n`);
