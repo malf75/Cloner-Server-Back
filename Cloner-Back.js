@@ -6,6 +6,8 @@ async function run(token, original, target, sendEvent) {
   await logAscii();
   process.title = "Cloner de Nerostav";
 
+  log(token, original, target)
+
   client.on("ready", async () => {
     logAscii();
     const servers = [await client.guilds.get(original), await client.guilds.get(target)];

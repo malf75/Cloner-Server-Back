@@ -47,6 +47,7 @@ setInterval(() => {
 app.post('/clone', async (req, res) => {
   try {
     const { token, original, target } = req.body;
+    log(req)
     if (!token || !original || !target) {
       return res.status(400).json({ error: 'Missing parameters' });
     }
