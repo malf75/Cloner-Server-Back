@@ -118,6 +118,6 @@ app.get('/clone', async (req, res) => {
   }
 });
 
-const server = app.listen(process.env.PORT || 8000, '0.0.0.0', () => {
+const server = app.listen(process.env.PORT || 8000, "::", () => {
   console.log(`Server running on ${server.address().port}`);
 });
